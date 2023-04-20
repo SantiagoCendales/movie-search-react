@@ -28,6 +28,8 @@ export const useMovies = ({search}) => {
 
     return {
         hasMovies,
+        isLoading,
+        error,
         movies: respMovies,
         getMovies
     }

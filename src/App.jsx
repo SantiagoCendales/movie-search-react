@@ -44,7 +44,7 @@ function App() {
 
   const { search, error, setSearch } = useSearch()
 
-  const { movies, hasMovies, getMovies } = useMovies({search});
+  const { movies, isLoading, error: movieError, hasMovies, getMovies } = useMovies({search});
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -76,7 +76,9 @@ function App() {
 
       <main>
         {
-          hasMovies
+          isLoading
+          ? <p>Loading...</p>
+          : hasMovies
           ? <MovieItem movies={movies}/>
           : <NoResult />
         }
