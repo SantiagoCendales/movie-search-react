@@ -44,11 +44,11 @@ function App() {
 
   const { search, error, setSearch } = useSearch()
 
-  const { mappedMovies, hasMovies } = useMovies();
+  const { movies, hasMovies, getMovies } = useMovies({search});
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(search)
+    getMovies();
   }
 
   const handleChange = (event) => {
@@ -77,7 +77,7 @@ function App() {
       <main>
         {
           hasMovies
-          ? <MovieItem movies={mappedMovies}/>
+          ? <MovieItem movies={movies}/>
           : <NoResult />
         }
       </main>
