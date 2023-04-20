@@ -1,15 +1,12 @@
 import './App.css'
-
-import responseMovies from './mocks/with-results.json'
-import noResults from './mocks/no-results.json'
+import { MovieItem, NoResult } from './components/MovieItem';
+import { useMovies } from './hooks/useMovies';
 
 const api_key = '2b4af9fd'
 
 function App() {
 
-  const movies = responseMovies.Search;
-
-  const hasMovies = movies?.length > 0;
+  const { mappedMovies, hasMovies } = useMovies();
 
   return (
     <div className='page'>
@@ -29,20 +26,8 @@ function App() {
       <main>
         {
           hasMovies
-          ? (
-            <ul>
-              {
-                movies.map(movie => (
-                  <li key={movie.imdbID}>
-                    <h3>{movie.Title}</h3>
-                    <p>{movie.Year}</p>
-                    <img src={movie.Poster} alt={movie.Title} />
-                  </li>
-                ))
-              }
-            </ul>
-          )
-          : <p>No movies found</p>
+          ? <MovieItem movies={mappedMovies}/>
+          : <NoResult />
         }
       </main>
     </div>
