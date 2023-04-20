@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import './App.css'
 import { MovieItem, NoResult } from './components/MovieItem';
 import { useMovies } from './hooks/useMovies';
+
+import debounce from 'just-debounce-it';
 
 const api_key = '2b4af9fd'
 
@@ -42,17 +44,36 @@ const useSearch = () => {
 
 function App() {
 
+  const [sort, setSort] = useState(false);
   const { search, error, setSearch } = useSearch()
+  const { movies,
+    isLoading,
+    error: movieError,
+    hasMovies,
+    getMovies
+  } = useMovies({search, sort});
 
-  const { movies, isLoading, error: movieError, hasMovies, getMovies } = useMovies({search});
+  const debouncedGetMovies = useCallback(
+    debounce(search => {
+      getMovies({search})
+    }, 500)
+    , []
+  )
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    getMovies();
+    getMovies({ search });
   }
 
   const handleChange = (event) => {
-    setSearch(event.target.value);
+    const newSearch = event.target.value;
+    setSearch(newSearch);
+    // debounce(() => getMovies({search: newSearch}), 500)
+    debouncedGetMovies(newSearch)
+  }
+
+  const handleSort = () => {
+    setSort(!sort);
   }
   
   return (
@@ -66,6 +87,11 @@ function App() {
             onChange={handleChange}
             type="text"
             placeholder='Iron man, Captain America, ...'
+          />
+          <input
+            type="checkbox"
+            onChange={handleSort}
+            checked={sort}
           />
           <button type="submit">
             Search
